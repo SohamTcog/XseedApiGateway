@@ -1,0 +1,37 @@
+spring:
+ cloud:
+   gateway:
+     routes:
+#       - id: swiggy-app
+#         uri: lb://SWIGGY-APP
+#         predicates:
+#           - Path=/swiggy/**
+#         filters:
+#           - AuthenticationFilter #before routing you should apply this filter to validate token 
+#           #if token is valid then only route the request 
+#
+#
+#       - id: restaurant-service
+#         uri: lb://RESTAURANT-SERVICE
+#         predicates:
+#           - Path=/restaurant/**
+#         filters:
+#           - AuthenticationFilter
+
+       - id: identity-service
+         uri: lb://IDENTITY-SERVICE
+         predicates:
+          - Path=/reset-password/**,/auth/**
+
+ application:
+   name: XSEED-API-GATEWAY
+   
+server:
+  port: 8085
+   
+   
+
+eureka:
+  client:
+    service-url:
+      defaultZone : http://localhost:8761/eureka/
