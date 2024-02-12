@@ -16,12 +16,12 @@ public class RouteValidator {
             "/eureka"
     );
 
-//    public Predicate<ServerHttpRequest> isSecured =
-//            request -> openApiEndpoints
-//                    .stream()
-//                    .noneMatch(uri -> request.getURI().getPath().contains(uri));
-
     public Predicate<ServerHttpRequest> isSecured =
+            request -> openApiEndpoints
+                    .stream()
+                    .noneMatch(uri -> request.getURI().getPath().contains(uri));
+
+   /* public Predicate<ServerHttpRequest> isSecured =
             request -> {
                 if (openApiEndpoints.stream().anyMatch(uri -> request.getURI().getPath().contains(uri))) {
                     return false; // Do not apply authentication filter for open API endpoints
@@ -56,5 +56,5 @@ public class RouteValidator {
         // For example, if roles are stored in headers:
         List<String> roleHeaders = request.getHeaders().get("X-Roles");
         return new HashSet<>(roleHeaders != null ? roleHeaders : Collections.emptyList());
-    }
+    }*/
 }
