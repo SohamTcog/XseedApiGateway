@@ -11,4 +11,10 @@ public class AppConfig {
     public RestTemplate template(){
        return new RestTemplate();
     }
+    
+    
+//    @Bean
+//    public RoleEndpointConfig roleEndpointConfig() {
+//        return new RoleEndpointConfig();
+//    }
 }

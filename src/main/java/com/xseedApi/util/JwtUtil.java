@@ -25,7 +25,12 @@ public class JwtUtil {
 
 
     public void validateToken(final String token) {
-        Jwts.parserBuilder().setSigningKey(getSignKey()).build().parseClaimsJws(token);
+    	 Claims claims = Jwts.parserBuilder().setSigningKey(getSignKey()).build().parseClaimsJws(token).getBody();
+ 	    Date expirationDate = claims.getExpiration();
+ 	    
+ 	    if (expirationDate != null && expirationDate.before(new Date())) {
+ 	        throw new RuntimeException("Token has expired");
+ 	    }
         
     }
 
@@ -40,8 +45,8 @@ public class JwtUtil {
         return Jwts.parserBuilder().setSigningKey(getSignKey()).build().parseClaimsJws(token).getBody();
     }
     
-    public Set<String> extractRoles(String token) {
+    public List<Integer> extractRoles(String token) {
         Claims claims = Jwts.parserBuilder().setSigningKey(getSignKey()).build().parseClaimsJws(token).getBody();
-        return new HashSet<>(claims.get("roles", List.class));
+        return claims.get("roles", List.class);
     }
 }
