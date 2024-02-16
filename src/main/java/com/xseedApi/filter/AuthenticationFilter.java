@@ -13,27 +13,26 @@ import com.xseedApi.util.JwtUtil;
 
 @Component
 public class AuthenticationFilter extends AbstractGatewayFilterFactory<AuthenticationFilter.Config> {
+	
+	  @Autowired
+	    private RouteValidator validator;
 
-    @Autowired
-    private RouteValidator validator;
+	    @Autowired
+	    private JwtUtil jwtUtil;
 
-    //    @Autowired
-//    private RestTemplate template;
-    @Autowired
-    private JwtUtil jwtUtil;
-
-    public AuthenticationFilter() {
-        super(Config.class);
-    }
-
-    @Override
-    public GatewayFilter apply(Config config) {
-        return ((exchange, chain) -> {
-            if (validator.isSecured.test(exchange.getRequest())) {
-                //header contains token or not
-                if (!exchange.getRequest().getHeaders().containsKey(HttpHeaders.AUTHORIZATION)) {
-                    throw new RuntimeException("missing authorization header");
-                }
+	    public AuthenticationFilter() {
+	        super(Config.class);
+	    }
+	    
+	  
+	    @Override
+	    public GatewayFilter apply(Config config) {
+	        return ((exchange, chain) -> {
+	            if (validator.isSecured.test(exchange.getRequest())) {
+	                //header contains token or not
+	                if (!exchange.getRequest().getHeaders().containsKey(HttpHeaders.AUTHORIZATION)) {
+	                    throw new RuntimeException("missing authorization header");
+	                }
 
                 String authHeader = exchange.getRequest().getHeaders().get(HttpHeaders.AUTHORIZATION).get(0);
                 if (authHeader != null && authHeader.startsWith("Bearer ")) {
@@ -91,7 +90,7 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
         });
     }
 
-    public static class Config {
+	    public static class Config {
 
-    }
+	    }
 }
