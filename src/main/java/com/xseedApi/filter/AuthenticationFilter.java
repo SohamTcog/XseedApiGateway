@@ -9,8 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 import com.xseedApi.util.JwtUtil;
@@ -30,6 +28,54 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
 	    
 	  
 	    @Override
+	  /*  public GatewayFilter apply(Config config) {
+            return ((exchange, chain) -> {
+                if (validator.isSecured.test(exchange.getRequest())) {
+                    if (!exchange.getRequest().getHeaders().containsKey(HttpHeaders.AUTHORIZATION)) {
+                        sendErrorResponse(exchange, "Missing authorization header", HttpStatus.UNAUTHORIZED);
+                        return Mono.empty();
+                    }
+
+                    String authHeader = exchange.getRequest().getHeaders().get(HttpHeaders.AUTHORIZATION).get(0);
+                    if (authHeader != null && authHeader.startsWith("Bearer")) {
+                        authHeader = authHeader.substring(7);
+                        List<Map<String, Object>> roleIds = jwtUtil.extractRoles(authHeader);
+
+                        String path = exchange.getRequest().getPath().value();
+
+                        if (path.startsWith("/job/candidate") && !roleIds.contains(1)) {
+                            sendErrorResponse(exchange, "Insufficient privileges", HttpStatus.FORBIDDEN);
+                            return Mono.empty();
+                        } else if (path.startsWith("/job/recruiter") && !roleIds.contains(2)) {
+                            sendErrorResponse(exchange, "Insufficient privileges", HttpStatus.FORBIDDEN);
+                            return Mono.empty();
+                        } else if (path.startsWith("/job/admin") && !roleIds.contains(3)) {
+                            sendErrorResponse(exchange, "Insufficient privileges", HttpStatus.FORBIDDEN);
+                            return Mono.empty();
+                        }
+
+                        try {
+                            jwtUtil.validateToken(authHeader);
+                        } catch (Exception e) {
+                            sendErrorResponse(exchange, "Unauthorized access to application", HttpStatus.UNAUTHORIZED);
+                            return Mono.empty();
+                        }
+                    }
+                }
+
+                return chain.filter(exchange);
+            });
+        }
+
+        private void sendErrorResponse(ServerWebExchange exchange, String message, HttpStatus status) {
+            exchange.getResponse().setStatusCode(status);
+            exchange.getResponse().getHeaders().setContentType(MediaType.APPLICATION_JSON);
+            byte[] bytes = message.getBytes(StandardCharsets.UTF_8);
+            org.springframework.core.io.buffer.DataBuffer buffer = exchange.getResponse().bufferFactory().wrap(bytes);
+            exchange.getResponse().writeWith(Mono.just(buffer));
+        }*/
+        
+        
 	    public GatewayFilter apply(Config config) {
 	        return ((exchange, chain) -> {
 	            if (validator.isSecured.test(exchange.getRequest())) {
@@ -37,7 +83,7 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
 	                if (!exchange.getRequest().getHeaders().containsKey(HttpHeaders.AUTHORIZATION)) {
 	                    throw new RuntimeException("missing authorization header");
 	                }
-
+	                try {
                 String authHeader = exchange.getRequest().getHeaders().get(HttpHeaders.AUTHORIZATION).get(0);
                 if (authHeader != null && authHeader.startsWith("Bearer ")) {
                     authHeader = authHeader.substring(7);
@@ -45,9 +91,10 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
                     // Decode the token and extract roles
                    // List<?> roleIds = jwtUtil.extractRoles(authHeader);
                    // System.out.println(roleIds);
-                    List<Map<String, Object>> roleIdList = jwtUtil.extractRoles(authHeader);
+                    //List<Map<String, Object>> roleIdList = jwtUtil.extractRoles(authHeader);
+                    List<Map<String, Object>> roleIds = jwtUtil.extractRoles(authHeader);
 
-                    List<Integer> ids = roleIdList.stream()
+                    /*List<Integer> ids = roleIdList.stream()
                             .map(roleMap -> (int) roleMap.get("id"))
                             .collect(Collectors.toList());
 
@@ -56,7 +103,7 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
                             .collect(Collectors.toList());
                     
                     System.out.println(ids);
-                    System.out.println(roleNames);
+                    System.out.println(roleNames);*/
 
                     String path = exchange.getRequest().getPath().value();
                     
@@ -80,19 +127,19 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
                      * role id 7 -----> admin 
                      * 8----> super admin 
                      * 9-----> delievery manager 
-                     * please start paths accordingly in separate controller 
-                     */
-                    if (path.startsWith("/job/candidate") && !roleNames.contains("ROLE_ADMIN")) {
+                     * please start paths accordingly in separate controller */
+                     
+                    if (path.startsWith("/job/candidate") && !roleIds.contains(1)) {
                         throw new RuntimeException("Insufficient privileges");
-                    } else if (path.startsWith("/job/recruiter") && !roleNames.contains("ROLE_ADMIN")) {
+                    } else if (path.startsWith("/job/recruiter") && !roleIds.contains(2)) {
                         throw new RuntimeException("Insufficient privileges");
-                    } else if (path.startsWith("/job/admin") && !roleNames.contains("ROLE_USER")) {
+                    } else if (path.startsWith("/job/admin") && !roleIds.contains(2)) {
                         throw new RuntimeException("Insufficient privileges");
                     }
                     
                   
                 }
-                try {
+               
 //                    //REST call to AUTH service
 //                    template.getForObject("http://IDENTITY-SERVICE//validate?token" + authHeader, String.class);
                     jwtUtil.validateToken(authHeader);
@@ -105,9 +152,10 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
             }
             return chain.filter(exchange);
         });
-    }
-
+    
+	 }
 	    public static class Config {
 
 	    }
+	    
 }
