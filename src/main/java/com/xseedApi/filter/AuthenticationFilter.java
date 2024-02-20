@@ -2,11 +2,15 @@ package com.xseedApi.filter;
 
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 import com.xseedApi.util.JwtUtil;
@@ -39,9 +43,21 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
                     authHeader = authHeader.substring(7);
                     
                     // Decode the token and extract roles
-                    List<Integer> roleIds = jwtUtil.extractRoles(authHeader);
+                   // List<?> roleIds = jwtUtil.extractRoles(authHeader);
+                   // System.out.println(roleIds);
+                    List<Map<String, Object>> roleIdList = jwtUtil.extractRoles(authHeader);
+
+                    List<Integer> ids = roleIdList.stream()
+                            .map(roleMap -> (int) roleMap.get("id"))
+                            .collect(Collectors.toList());
+
+                    List<String> roleNames = roleIdList.stream()
+                            .map(roleMap -> (String) roleMap.get("role"))
+                            .collect(Collectors.toList());
                     
-                    // Extract the path of the requested endpoint
+                    System.out.println(ids);
+                    System.out.println(roleNames);
+
                     String path = exchange.getRequest().getPath().value();
                     
                     
@@ -66,11 +82,11 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
                      * 9-----> delievery manager 
                      * please start paths accordingly in separate controller 
                      */
-                    if (path.startsWith("/job/candidate") && !roleIds.contains(5)) {
+                    if (path.startsWith("/job/candidate") && !roleNames.contains("ROLE_ADMIN")) {
                         throw new RuntimeException("Insufficient privileges");
-                    } else if (path.startsWith("/job/recruiter") && !roleIds.contains(6)) {
+                    } else if (path.startsWith("/job/recruiter") && !roleNames.contains("ROLE_ADMIN")) {
                         throw new RuntimeException("Insufficient privileges");
-                    } else if (path.startsWith("/job/admin") && !roleIds.contains(7)) {
+                    } else if (path.startsWith("/job/admin") && !roleNames.contains("ROLE_USER")) {
                         throw new RuntimeException("Insufficient privileges");
                     }
                     
@@ -84,6 +100,7 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
                 } catch (Exception e) {
                     System.out.println("invalid access...!");
                     throw new RuntimeException("un authorized access to application");
+
                 }
             }
             return chain.filter(exchange);

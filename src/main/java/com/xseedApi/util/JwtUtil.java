@@ -12,6 +12,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+
+import javax.management.relation.Role;
+
 import java.util.HashSet;
 import java.util.List;
 //for this add dependency ---> jwt dependency 
@@ -45,7 +48,7 @@ public class JwtUtil {
         return Jwts.parserBuilder().setSigningKey(getSignKey()).build().parseClaimsJws(token).getBody();
     }
     
-    public List<Integer> extractRoles(String token) {
+    public List<Map<String, Object>> extractRoles(String token) {
         Claims claims = Jwts.parserBuilder().setSigningKey(getSignKey()).build().parseClaimsJws(token).getBody();
         return claims.get("roles", List.class);
     }
