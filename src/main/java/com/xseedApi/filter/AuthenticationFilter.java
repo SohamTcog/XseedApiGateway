@@ -68,11 +68,11 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
                      * 9-----> delievery manager 
                      * please start paths accordingly in separate controller 
                      */
-                    if (path.startsWith("/job/candidate") && !roleIds.contains(5)) {
+                    if (path.startsWith("/job/candidate") && !roleIds.contains(1)) {
                         throw new RuntimeException("Insufficient privileges");
-                    } else if (path.startsWith("/job/recruiter") && !roleIds.contains(6)) {
+                    } else if (path.startsWith("/job/recruiter") && !roleIds.contains(2)) {
                         throw new RuntimeException("Insufficient privileges");
-                    } else if (path.startsWith("/job/admin") && !roleIds.contains(7)) {
+                    } else if (path.startsWith("/job/admin") && !roleIds.contains(3)) {
                         throw new RuntimeException("Insufficient privileges");
                     }
                     
