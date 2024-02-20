@@ -49,4 +49,12 @@ public class JwtUtil {
         Claims claims = Jwts.parserBuilder().setSigningKey(getSignKey()).build().parseClaimsJws(token).getBody();
         return claims.get("roles", List.class);
     }
+    
+    public String extractUserId(String token) {
+        Claims claims = Jwts.parserBuilder().setSigningKey(getSignKey()).build().parseClaimsJws(token).getBody();
+        int userId = claims.get("userId", Integer.class);
+        return String.valueOf(userId);
+    }
+
+
 }
