@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
 
 import com.xseedApi.util.JwtUtil;
@@ -28,6 +29,7 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
 	    @Override
 	    public GatewayFilter apply(Config config) {
 	        return ((exchange, chain) -> {
+	        	ServerHttpRequest request = null;  
 	            if (validator.isSecured.test(exchange.getRequest())) {
 	                //header contains token or not
 	                if (!exchange.getRequest().getHeaders().containsKey(HttpHeaders.AUTHORIZATION)) {
@@ -79,14 +81,25 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
                 try {
 //                    //REST call to AUTH service
 //                    template.getForObject("http://IDENTITY-SERVICE//validate?token" + authHeader, String.class);
-                    jwtUtil.validateToken(authHeader);
+                   jwtUtil.validateToken(authHeader);
+                   System.out.println("\n\n\n Headers before modification: " + exchange.getRequest().getHeaders());
 
+                   String userId = jwtUtil.extractUserId(authHeader);
+                   
+                   if (request == null) {
+                       request = exchange.getRequest();
+                   }
+                   
+                    request = request.mutate()
+                           .header("loggedInUser", userId)
+                           .build();
+                    System.out.println("\n\n\n Headers after modification: " + request.getHeaders());
                 } catch (Exception e) {
                     System.out.println("invalid access...!");
                     throw new RuntimeException("un authorized access to application");
                 }
             }
-            return chain.filter(exchange);
+            return chain.filter(exchange.mutate().request(request).build());//.request(request).build()//exchange.mutate().request(request).build()
         });
     }
 
