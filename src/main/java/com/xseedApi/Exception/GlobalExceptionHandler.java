@@ -1,4 +1,4 @@
-package com.xseedApi.filter;
+package com.xseedApi.Exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

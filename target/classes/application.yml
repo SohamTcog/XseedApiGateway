@@ -6,8 +6,8 @@ spring:
          uri: lb://SWIGGY-APP
          predicates:
            - Path=/swiggy/**
-         filters:
-           - AuthenticationFilter #before routing you should apply this filter to validate token 
+#         filters:
+#           - AuthenticationFilter #before routing you should apply this filter to validate token 
            #if token is valid then only route the request 
 
 
@@ -15,13 +15,13 @@ spring:
          uri: lb://RESTAURANT-SERVICE
          predicates:
             - Path=/restaurant/**, /job/**
-         filters:
-           - AuthenticationFilter
+#         filters:
+#           - AuthenticationFilter
 
        - id: identity-service
          uri: lb://IDENTITY-SERVICE
          predicates:
-          - Path=/reset-password/**,/auth/**
+          - Path=/reset-password/**,/auth/**,/user/**
 
  application:
    name: XSEED-API-GATEWAY

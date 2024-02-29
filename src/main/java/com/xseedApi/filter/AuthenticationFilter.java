@@ -41,8 +41,8 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
                     authHeader = authHeader.substring(7);
                     
                     // Decode the token and extract roles
-                    List<Integer> roleIds = jwtUtil.extractRoles(authHeader);
-                    
+                    List<String> roles = jwtUtil.extractRoles(authHeader);
+                    System.out.println(roles);
                     // Extract the path of the requested endpoint
                     String path = exchange.getRequest().getPath().value();
                     
@@ -68,16 +68,16 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
                      * 9-----> delievery manager 
                      * please start paths accordingly in separate controller 
                      */
-                    if (path.startsWith("/job/candidate") && !roleIds.contains(1)) {
-                        throw new RuntimeException("Insufficient privileges");
-                    } else if (path.startsWith("/job/recruiter") && !roleIds.contains(2)) {
-                        throw new RuntimeException("Insufficient privileges");
-                    } else if (path.startsWith("/job/admin") && !roleIds.contains(3)) {
-                        throw new RuntimeException("Insufficient privileges");
-                    }
+//                    if (path.startsWith("/job/candidate") && !roleIds.contains(1)) {
+//                        throw new RuntimeException("Insufficient privileges");
+//                    } else if (path.startsWith("/job/recruiter") && !roleIds.contains(2)) {
+//                        throw new RuntimeException("Insufficient privileges");
+//                    } else if (path.startsWith("/job/admin") && !roleIds.contains(3)) {
+//                        throw new RuntimeException("Insufficient privileges");
+//                    }
                     
                   
-                }
+                
                 try {
 //                    //REST call to AUTH service
 //                    template.getForObject("http://IDENTITY-SERVICE//validate?token" + authHeader, String.class);
@@ -85,13 +85,13 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
                    System.out.println("\n\n\n Headers before modification: " + exchange.getRequest().getHeaders());
 
                    String userId = jwtUtil.extractUserId(authHeader);
-                   
                    if (request == null) {
                        request = exchange.getRequest();
                    }
-                   
+                
                     request = request.mutate()
                            .header("loggedInUser", userId)
+                           .header("userRoles", String.join(",", roles))
                            .build();
                     System.out.println("\n\n\n Headers after modification: " + request.getHeaders());
                 } catch (Exception e) {
@@ -99,6 +99,7 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
                     throw new RuntimeException("un authorized access to application");
                 }
             }
+	            }
             return chain.filter(exchange.mutate().request(request).build());//.request(request).build()//exchange.mutate().request(request).build()
         });
     }

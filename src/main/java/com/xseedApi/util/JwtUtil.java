@@ -21,7 +21,7 @@ import java.util.List;
 public class JwtUtil {
 
 
-    public static final String SECRET = "5367566B59703373367639792F423F4528482B4D6251655468576D5A71347437";
+    public static final String SECRET = "gaczp7T3DuVFgz8do93aamBj9RwFt3bx2YqB7ggLw7YCZb9swt5qHaqj2NxcqjaY+Fw4KIW7uM7ZHf6GMS5IIQ==";
 
 
     public void validateToken(final String token) {
@@ -45,7 +45,7 @@ public class JwtUtil {
         return Jwts.parserBuilder().setSigningKey(getSignKey()).build().parseClaimsJws(token).getBody();
     }
     
-    public List<Integer> extractRoles(String token) {
+    public List<String> extractRoles(String token) {
         Claims claims = Jwts.parserBuilder().setSigningKey(getSignKey()).build().parseClaimsJws(token).getBody();
         return claims.get("roles", List.class);
     }
