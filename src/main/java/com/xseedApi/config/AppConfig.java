@@ -13,8 +13,5 @@ public class AppConfig {
     }
     
     
-//    @Bean
-//    public RoleEndpointConfig roleEndpointConfig() {
-//        return new RoleEndpointConfig();
-//    }
+
 }

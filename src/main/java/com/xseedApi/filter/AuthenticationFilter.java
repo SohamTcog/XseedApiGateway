@@ -10,6 +10,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
 
+import com.xseedApi.constants.PathConstants;
+import com.xseedApi.constants.RolesConstants;
 import com.xseedApi.util.JwtUtil;
 
 @Component
@@ -46,41 +48,19 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
                     // Extract the path of the requested endpoint
                     String path = exchange.getRequest().getPath().value();
                     
-                    
-                    /*Retrieve the endpoint mappings from RoleEndpointConfig bean
-                    Map<Integer, String> roleEndpointMap = roleEndpointConfig.roleEndpointMap();
-
-                    // Check roles based on the endpoint using the configured mappings
-                    for (Map.Entry<Integer, String> entry : roleEndpointMap.entrySet()) {
-                        if (path.startsWith(entry.getValue()) && !roleIds.contains(entry.getKey())) {
-                            throw new RuntimeException("Insufficient privileges");
-                        }
-                    }*/
-
-                    //Check roles based on the endpoint
-                    
-                    
-                    /*
-                     * role id - 5 ---> candidate 
-                     * role id 6-----> recruiter 
-                     * role id 7 -----> admin 
-                     * 8----> super admin 
-                     * 9-----> delievery manager 
-                     * please start paths accordingly in separate controller 
-                     */
-                    if (path.startsWith("/job/candidate") && !roleIds.contains(5)) {
+                 // Check if the requested path matches any of the defined paths for different roles
+                    if (path.startsWith(PathConstants.CANDIDATE_PATH) && !roleIds.contains(RolesConstants.ROLE_CANDIDATE)) {
                         throw new RuntimeException("Insufficient privileges");
-                    } else if (path.startsWith("/job/recruiter") && !roleIds.contains(6)) {
+                    } else if ((path.startsWith(PathConstants.RECRUITER_PATH) || path.startsWith(PathConstants.RECRUITER_LISTING_PATH)) && !roleIds.contains(RolesConstants.ROLE_RECRUITER)) {
                         throw new RuntimeException("Insufficient privileges");
-                    } else if (path.startsWith("/job/admin") && !roleIds.contains(7)) {
+                    } else if (path.startsWith(PathConstants.ADMIN_PATH) && !roleIds.contains(RolesConstants.ROLE_ADMIN)) {
                         throw new RuntimeException("Insufficient privileges");
                     }
                     
                   
                 }
                 try {
-//                    //REST call to AUTH service
-//                    template.getForObject("http://IDENTITY-SERVICE//validate?token" + authHeader, String.class);
+              
                    jwtUtil.validateToken(authHeader);
                    System.out.println("\n\n\n Headers before modification: " + exchange.getRequest().getHeaders());
 
