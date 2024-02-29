@@ -5,7 +5,15 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
+<<<<<<< HEAD:target/classes/META-INF/maven/com.xseedApi/xseed-api-gateway/pom.xml
 		<version>3.2.2</version>
+=======
+<<<<<<< HEAD
+		<version>3.2.2</version>
+=======
+		<version>3.0.4</version>
+>>>>>>> 051507dabc5c55a6be737238aa49897ea1102c96
+>>>>>>> b021f047ebb21d835173492e738bed82717d324f:target/classes/META-INF/maven/com.javatechie/swiggy-gateway/pom.xml
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.xseedApi</groupId>
@@ -15,7 +23,15 @@
 	<description>Xseed AI API Gateway Microservice</description>
 	<properties>
 		<java.version>17</java.version>
+<<<<<<< HEAD:target/classes/META-INF/maven/com.xseedApi/xseed-api-gateway/pom.xml
 		<spring-cloud.version>2023.0.0</spring-cloud.version>
+=======
+<<<<<<< HEAD
+		<spring-cloud.version>2023.0.0</spring-cloud.version>
+=======
+		<spring-cloud.version>2022.0.1</spring-cloud.version>
+>>>>>>> 051507dabc5c55a6be737238aa49897ea1102c96
+>>>>>>> b021f047ebb21d835173492e738bed82717d324f:target/classes/META-INF/maven/com.javatechie/swiggy-gateway/pom.xml
 	</properties>
 	<dependencies>
 		<dependency>
