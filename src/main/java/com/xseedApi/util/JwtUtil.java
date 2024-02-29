@@ -5,6 +5,8 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
@@ -14,14 +16,12 @@ import java.util.Map;
 import java.util.Set;
 import java.util.HashSet;
 import java.util.List;
-//for this add dependency ---> jwt dependency 
-//Here use same methods as you created in JWTService in identity service 
-//same key should be used to validate token 
+
 @Component
 public class JwtUtil {
-
-
-    public static final String SECRET = "5367566B59703373367639792F423F4528482B4D6251655468576D5A71347437";
+	
+	@Value("${jwt.secret}")
+    private String secret;
 
 
     public void validateToken(final String token) {
@@ -37,7 +37,7 @@ public class JwtUtil {
 
 
     private Key getSignKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(SECRET);
+        byte[] keyBytes = Decoders.BASE64.decode(secret);
         return Keys.hmacShaKeyFor(keyBytes);
     }
     
