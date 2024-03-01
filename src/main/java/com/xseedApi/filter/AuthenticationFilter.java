@@ -56,6 +56,7 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
 							&& !roleIds.contains(RolesConstants.ROLE_RECRUITER)) {
 						throw new RuntimeException("Insufficient privileges");
 					} else if (path.startsWith(PathConstants.ADMIN_PATH)
+							|| path.startsWith(PathConstants.TEMPLATE_PATH)
 							&& !roleIds.contains(RolesConstants.ROLE_ADMIN)) {
 
 						throw new RuntimeException("Insufficient privileges");
