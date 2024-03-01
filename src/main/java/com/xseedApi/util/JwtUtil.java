@@ -5,6 +5,8 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
@@ -14,14 +16,12 @@ import java.util.Map;
 import java.util.Set;
 import java.util.HashSet;
 import java.util.List;
-//for this add dependency ---> jwt dependency 
-//Here use same methods as you created in JWTService in identity service 
-//same key should be used to validate token 
+
 @Component
 public class JwtUtil {
-
-
-    public static final String SECRET = "gaczp7T3DuVFgz8do93aamBj9RwFt3bx2YqB7ggLw7YCZb9swt5qHaqj2NxcqjaY+Fw4KIW7uM7ZHf6GMS5IIQ==";
+	
+	@Value("${jwt.secret}")
+    private String secret;
 
 
     public void validateToken(final String token) {
@@ -37,7 +37,7 @@ public class JwtUtil {
 
 
     private Key getSignKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(SECRET);
+        byte[] keyBytes = Decoders.BASE64.decode(secret);
         return Keys.hmacShaKeyFor(keyBytes);
     }
     
@@ -45,7 +45,7 @@ public class JwtUtil {
         return Jwts.parserBuilder().setSigningKey(getSignKey()).build().parseClaimsJws(token).getBody();
     }
     
-    public List<String> extractRoles(String token) {
+    public List<Integer> extractRoles(String token) {
         Claims claims = Jwts.parserBuilder().setSigningKey(getSignKey()).build().parseClaimsJws(token).getBody();
         return claims.get("roles", List.class);
     }
