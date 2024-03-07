@@ -6,7 +6,7 @@ spring:
        - id: recruiter-service
          uri: lb://RECRUITER-SERVICE
          predicates:
-            - Path=/api/jobcreation/**, /job/joblisting/**
+            - Path=/api/jobcreation/**, /job/joblisting/**,/api/template/**
          filters:
            - AuthenticationFilter
 
