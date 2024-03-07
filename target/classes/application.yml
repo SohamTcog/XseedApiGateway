@@ -13,7 +13,7 @@ spring:
        - id: identity-service
          uri: lb://IDENTITY-SERVICE
          predicates:
-          - Path=/reset-password/**, /auth/**
+          - Path=/reset-password/**, /auth/**, /user/**
 
  application:
    name: XSEED-API-GATEWAY
