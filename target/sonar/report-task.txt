@@ -1,0 +1,6 @@
+projectKey=com.xseedApi:xseed-api-gateway
+serverUrl=http://localhost:9000
+serverVersion=8.9.10.61524
+dashboardUrl=http://localhost:9000/dashboard?id=com.xseedApi%3Axseed-api-gateway
+ceTaskId=AY5BbJWrUXsq-lzj3JuY
+ceTaskUrl=http://localhost:9000/api/ce/task?id=AY5BbJWrUXsq-lzj3JuY
