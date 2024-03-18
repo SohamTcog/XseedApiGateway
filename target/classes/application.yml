@@ -13,7 +13,7 @@ spring:
        - id: identity-service
          uri: lb://IDENTITY-SERVICE
          predicates:
-          - Path=/reset-password/**, /auth/**, /user/**
+          - Path=/api/reset-password/**, /api/auth/**, /api/user/**
 
  application:
    name: XSEED-API-GATEWAY
@@ -31,4 +31,4 @@ eureka:
     registerWithEureka: true
     fetchRegistry: true
     serviceUrl:
-      defaultZone: http://eureka-0.eureka.default.svc.cluster.localhost:8761/eureka
+      defaultZone : http://localhost:8761/eureka/

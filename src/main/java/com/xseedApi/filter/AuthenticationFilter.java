@@ -1,6 +1,7 @@
 package com.xseedApi.filter;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
@@ -11,11 +12,12 @@ import org.springframework.stereotype.Component;
 
 import com.xseedApi.constants.PathConstants;
 import com.xseedApi.constants.RolesConstants;
+import com.xseedApi.exception.XseedException;
 import com.xseedApi.util.JwtUtil;
 
 @Component
 public class AuthenticationFilter extends AbstractGatewayFilterFactory<AuthenticationFilter.Config> {
-
+	private static final Logger logger = Logger.getLogger(AuthenticationFilter.class.getName());
 	@Autowired
 	private RouteValidator validator;
 
@@ -33,7 +35,7 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
 			if (validator.isSecured.test(exchange.getRequest())) {
 				// header contains token or not
 				if (!exchange.getRequest().getHeaders().containsKey(HttpHeaders.AUTHORIZATION)) {
-					throw new RuntimeException("missing authorization header");
+					throw new XseedException("missing authorization header");
 				}
 
 				String authHeader = exchange.getRequest().getHeaders().get(HttpHeaders.AUTHORIZATION).get(0);
@@ -59,14 +61,14 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
 							|| path.startsWith(PathConstants.TEMPLATE_PATH)
 							&& !roleIds.contains(RolesConstants.ROLE_ADMIN)) {
 
-						throw new RuntimeException("Insufficient privileges");
+						throw new XseedException("Insufficient privileges");
 					}
 
 				}
 				try {
 
 					jwtUtil.validateToken(authHeader);
-					System.out.println("\n\n\n Headers before modification: " + exchange.getRequest().getHeaders());
+					 logger.info("\n\n\n Headers before modification: " + exchange.getRequest().getHeaders());
 
 					String userId = jwtUtil.extractUserId(authHeader);
 
@@ -75,9 +77,9 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
 					}
 
 					request = request.mutate().header("loggedInUser", userId).build();
-					System.out.println("\n\n\n Headers after modification: " + request.getHeaders());
+					 logger.info("\n\n\n Headers after modification: " + request.getHeaders());
 				} catch (Exception e) {
-					System.out.println("invalid access...!");
+					 logger.info("invalid access...!");
 					throw new RuntimeException("un authorized access to application");
 				}
 			}
