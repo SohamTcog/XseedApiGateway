@@ -1,7 +1,15 @@
 spring:
  cloud:
    gateway:
-     routes:
+    default-filters:
+        - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
+    globalcors:
+        corsConfigurations:
+          '[/**]':
+              allowedOrigins: "*"
+              allowedMethods: "*"
+              allowedHeaders: "*"
+    routes:
       
        - id: recruiter-service
          uri: lb://RECRUITER-SERVICE
@@ -13,7 +21,7 @@ spring:
        - id: identity-service
          uri: lb://IDENTITY-SERVICE
          predicates:
-          - Path=/api/reset-password/**, /api/auth/**, /api/user/**
+          - Path=/reset-password/**, /auth/**, /user/**
 
  application:
    name: XSEED-API-GATEWAY
@@ -24,11 +32,6 @@ server:
    
 
 eureka:
-  instance:
-    preferIpAddress: true
-    hostname: eureka-0
   client:
-    registerWithEureka: true
-    fetchRegistry: true
-    serviceUrl:
+    service-url:
       defaultZone : http://localhost:8761/eureka/
