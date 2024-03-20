@@ -1,15 +1,15 @@
 spring:
  cloud:
    gateway:
-    default-filters:
-        - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
-    globalcors:
+     default-filters:
+       - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
+     globalcors:
         corsConfigurations:
           '[/**]':
               allowedOrigins: "*"
               allowedMethods: "*"
-              allowedHeaders: "*"
-    routes:
+              allowedHeaders: "*"   
+     routes:
       
        - id: recruiter-service
          uri: lb://RECRUITER-SERVICE
@@ -21,7 +21,7 @@ spring:
        - id: identity-service
          uri: lb://IDENTITY-SERVICE
          predicates:
-          - Path=/reset-password/**, /auth/**, /user/**
+          - Path=/api/reset-password/**, /api/auth/**, /api/user/**
 
  application:
    name: XSEED-API-GATEWAY
